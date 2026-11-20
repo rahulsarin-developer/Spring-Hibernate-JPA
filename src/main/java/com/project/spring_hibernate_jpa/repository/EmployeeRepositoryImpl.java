@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class EmployeeRepositoryImpl implements EmployeeRepository {
 
@@ -27,5 +29,13 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         SELECT COUNT(e) FROM Employee e WHERE LOWER(e.email) = LOWER(:email)
         """, Long.class).setParameter("email", email).getSingleResult();
         return count > 0;
+    }
+
+    @Override
+    public Optional<Employee> findById(Long id) {
+
+        return Optional.ofNullable(
+                entityManager.find(Employee.class, id)
+        );
     }
 }

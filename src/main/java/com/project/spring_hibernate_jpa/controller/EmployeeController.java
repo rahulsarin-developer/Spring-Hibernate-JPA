@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 
 @RestController
 @Validated
-@RequestMapping("/api/v1/employees")
+@RequestMapping("/api/v1/employee")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
@@ -22,7 +22,7 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @PostMapping(path = "/addEmployee", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse> addEmployee(
             @Valid @RequestBody EmployeeRequest employeeRequest) {
         employeeService.addEmployee(employeeRequest);
@@ -31,5 +31,10 @@ public class EmployeeController {
                 "Employee Added Successfully"
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+    }
+
+    @GetMapping("/fetch/{id}")
+    public EmployeeResponse getEmployeeById(@PathVariable Long id) {
+        return employeeService.getEmployeeById(id);
     }
 }

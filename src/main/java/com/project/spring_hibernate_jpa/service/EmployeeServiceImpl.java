@@ -1,11 +1,15 @@
 package com.project.spring_hibernate_jpa.service;
 
 import com.project.spring_hibernate_jpa.dto.EmployeeRequest;
+import com.project.spring_hibernate_jpa.dto.EmployeeResponse;
 import com.project.spring_hibernate_jpa.exception.ConflictException;
+import com.project.spring_hibernate_jpa.exception.ResourceNotFoundException;
 import com.project.spring_hibernate_jpa.model.Employee;
 import com.project.spring_hibernate_jpa.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -33,4 +37,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setSalary(employeeRequest.salary());
         employeeRepository.saveEmployee(employee);
     }
+
+    @Override
+    public EmployeeResponse getEmployeeById(Long id) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+        Employee employee = optionalEmployee.orElseThrow(
+                ()->new ResourceNotFoundException("Employee not found with id: " + id));
+        EmployeeResponse response = new EmployeeResponse(
+                employee.getId(),
+                employee.getName(),
+                employee.getEmail(),
+                employee.getDepartment(),
+                employee.getSalary(),
+                employee.getVersion(),
+                employee.getCreatedAt()
+        );
+        return response;
+    }
 }
+
