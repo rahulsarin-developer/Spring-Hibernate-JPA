@@ -9,5 +9,9 @@ public interface EmployeeRepository {
 
     boolean existsByEmail(String email);
 
+    boolean existsByEmail(String email, Long id);
+
     Optional<Employee> findById(Long id);
+
+    void updateEmployee(Employee employee);
 }
