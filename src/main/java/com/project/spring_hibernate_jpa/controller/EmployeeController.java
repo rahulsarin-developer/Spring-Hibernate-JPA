@@ -3,6 +3,7 @@ package com.project.spring_hibernate_jpa.controller;
 import com.project.spring_hibernate_jpa.dto.ApiResponse;
 import com.project.spring_hibernate_jpa.dto.EmployeeRequest;
 import com.project.spring_hibernate_jpa.dto.EmployeeResponse;
+import com.project.spring_hibernate_jpa.dto.SalaryRequest;
 import com.project.spring_hibernate_jpa.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -47,5 +48,12 @@ public class EmployeeController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deleteEmployee(@PathVariable Long id) {
         return employeeService.deleteEmployee(id);
+    }
+
+    @PatchMapping("/update/{id}/salary")
+    public ResponseEntity<ApiResponse> updateSalary(
+            @PathVariable Long id,
+            @Valid @RequestBody SalaryRequest salaryRequest) {
+        return employeeService.updateSalary(id, salaryRequest);
     }
 }

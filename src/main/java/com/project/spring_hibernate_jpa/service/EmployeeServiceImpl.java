@@ -3,6 +3,7 @@ package com.project.spring_hibernate_jpa.service;
 import com.project.spring_hibernate_jpa.dto.ApiResponse;
 import com.project.spring_hibernate_jpa.dto.EmployeeRequest;
 import com.project.spring_hibernate_jpa.dto.EmployeeResponse;
+import com.project.spring_hibernate_jpa.dto.SalaryRequest;
 import com.project.spring_hibernate_jpa.exception.ConflictException;
 import com.project.spring_hibernate_jpa.exception.ResourceNotFoundException;
 import com.project.spring_hibernate_jpa.model.Employee;
@@ -88,6 +89,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         ApiResponse response = new ApiResponse(
                 200,
                 "Employee Deleted Successfully"
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> updateSalary(Long id, SalaryRequest salaryRequest) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(
+                "Employee not found with id: " + id));
+        employee.setSalary(salaryRequest.salary());
+        employeeRepository.updateEmployee(employee);
+        ApiResponse response = new ApiResponse(
+                200,
+                "Employee Salary Updated Successfully"
         );
         return ResponseEntity.ok(response);
     }
