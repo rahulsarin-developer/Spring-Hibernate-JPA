@@ -78,4 +78,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         );
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    public ResponseEntity<ApiResponse> deleteEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(
+                "Employee not found with id: " + id
+        ));
+        employeeRepository.delete(employee);
+        ApiResponse response = new ApiResponse(
+                200,
+                "Employee Deleted Successfully"
+        );
+        return ResponseEntity.ok(response);
+    }
 }

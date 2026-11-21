@@ -13,5 +13,7 @@ public interface EmployeeService {
     EmployeeResponse getEmployeeById(Long id);
 
     ResponseEntity<ApiResponse> updateEmployee(Long id, @Valid EmployeeRequest employeeRequest);
+
+    ResponseEntity<ApiResponse> deleteEmployee(Long id);
 }
 

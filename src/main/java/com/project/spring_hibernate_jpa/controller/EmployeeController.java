@@ -43,4 +43,9 @@ public class EmployeeController {
             @PathVariable Long id, @Valid @RequestBody EmployeeRequest employeeRequest) {
         return employeeService.updateEmployee(id, employeeRequest);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteEmployee(@PathVariable Long id) {
+        return employeeService.deleteEmployee(id);
+    }
 }

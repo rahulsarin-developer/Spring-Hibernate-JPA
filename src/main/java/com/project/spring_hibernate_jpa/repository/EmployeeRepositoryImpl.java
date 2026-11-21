@@ -54,4 +54,11 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
         entityManager.merge(employee);
         entityManager.flush();
     }
+
+    @Override
+    public void delete(Employee employee) {
+        entityManager.remove(
+                entityManager.contains(employee) ? employee : entityManager.merge(employee)
+        );
+    }
 }

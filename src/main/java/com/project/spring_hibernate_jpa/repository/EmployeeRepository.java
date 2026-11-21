@@ -14,4 +14,6 @@ public interface EmployeeRepository {
     Optional<Employee> findById(Long id);
 
     void updateEmployee(Employee employee);
+
+    void delete(Employee employee);
 }
