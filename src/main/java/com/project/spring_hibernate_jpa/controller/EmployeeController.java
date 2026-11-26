@@ -1,9 +1,6 @@
 package com.project.spring_hibernate_jpa.controller;
 
-import com.project.spring_hibernate_jpa.dto.ApiResponse;
-import com.project.spring_hibernate_jpa.dto.EmployeeRequest;
-import com.project.spring_hibernate_jpa.dto.EmployeeResponse;
-import com.project.spring_hibernate_jpa.dto.SalaryRequest;
+import com.project.spring_hibernate_jpa.dto.*;
 import com.project.spring_hibernate_jpa.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -11,6 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 @RestController
 @Validated
@@ -55,5 +55,25 @@ public class EmployeeController {
             @PathVariable Long id,
             @Valid @RequestBody SalaryRequest salaryRequest) {
         return employeeService.updateSalary(id, salaryRequest);
+    }
+
+    @GetMapping("/search")
+    public PageResponse<EmployeeResponse> searchRecord(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) BigDecimal minSalary,
+            @RequestParam(required = false) BigDecimal maxSalary,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+        return employeeService.searchRecord(
+                new EmployeeFilter(name, department, minSalary, maxSalary), page, size, sortBy, direction
+        );
+    }
+
+    @GetMapping("/count")
+    public Map<String, Long> count(@RequestParam(required = false) String department) {
+        return Map.of("count", employeeService.count(department));
     }
 }

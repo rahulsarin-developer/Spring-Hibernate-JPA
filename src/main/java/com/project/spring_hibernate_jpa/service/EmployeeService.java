@@ -1,9 +1,6 @@
 package com.project.spring_hibernate_jpa.service;
 
-import com.project.spring_hibernate_jpa.dto.ApiResponse;
-import com.project.spring_hibernate_jpa.dto.EmployeeRequest;
-import com.project.spring_hibernate_jpa.dto.EmployeeResponse;
-import com.project.spring_hibernate_jpa.dto.SalaryRequest;
+import com.project.spring_hibernate_jpa.dto.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 
@@ -18,5 +15,9 @@ public interface EmployeeService {
     ResponseEntity<ApiResponse> deleteEmployee(Long id);
 
     ResponseEntity<ApiResponse> updateSalary(Long id, @Valid SalaryRequest salaryRequest);
+
+    PageResponse<EmployeeResponse> searchRecord(EmployeeFilter employeeFilter, int page, int size, String sortBy, String direction);
+
+    Long count(String department);
 }
 

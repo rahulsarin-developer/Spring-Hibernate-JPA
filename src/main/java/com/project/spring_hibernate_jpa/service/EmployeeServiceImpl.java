@@ -1,9 +1,6 @@
 package com.project.spring_hibernate_jpa.service;
 
-import com.project.spring_hibernate_jpa.dto.ApiResponse;
-import com.project.spring_hibernate_jpa.dto.EmployeeRequest;
-import com.project.spring_hibernate_jpa.dto.EmployeeResponse;
-import com.project.spring_hibernate_jpa.dto.SalaryRequest;
+import com.project.spring_hibernate_jpa.dto.*;
 import com.project.spring_hibernate_jpa.exception.ConflictException;
 import com.project.spring_hibernate_jpa.exception.ResourceNotFoundException;
 import com.project.spring_hibernate_jpa.model.Employee;
@@ -11,11 +8,17 @@ import com.project.spring_hibernate_jpa.repository.EmployeeRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
 public class EmployeeServiceImpl implements EmployeeService {
+
+    private static final Set<String> SORT_FIELDS = Set.of("id", "name", "email", "department", "salary", "createdAt");
 
     private final EmployeeRepository employeeRepository;
 
@@ -104,5 +107,70 @@ public class EmployeeServiceImpl implements EmployeeService {
                 "Employee Salary Updated Successfully"
         );
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<EmployeeResponse> searchRecord(
+            EmployeeFilter employeeFilter,
+            int page,
+            int size,
+            String sortBy,
+            String direction) {
+        if (page < 0 || size < 1 || size > 100) {
+            throw new IllegalArgumentException(
+                    "page must be >= 0 and size must be 1..100");
+        }
+        if (!SORT_FIELDS.contains(sortBy)) {
+            throw new IllegalArgumentException("Unsupported sort field");
+        }
+        if (!direction.equalsIgnoreCase("asc")
+                && !direction.equalsIgnoreCase("desc")) {
+            throw new IllegalArgumentException(
+                    "direction must be asc or desc");
+        }
+        if (employeeFilter.minSalary() != null
+                && employeeFilter.maxSalary() != null
+                && employeeFilter.minSalary()
+                .compareTo(employeeFilter.maxSalary()) > 0) {
+            throw new IllegalArgumentException(
+                    "minSalary must be <= maxSalary");
+        }
+        List<Employee> employees = employeeRepository.searchRecord(
+                employeeFilter,
+                page,
+                size,
+                sortBy,
+                direction.equalsIgnoreCase("asc")
+        );
+        List<EmployeeResponse> employeeResponses = new ArrayList<>();
+        for (Employee employee : employees) {
+            EmployeeResponse response = new EmployeeResponse(
+                    employee.getId(),
+                    employee.getName(),
+                    employee.getEmail(),
+                    employee.getDepartment(),
+                    employee.getSalary(),
+                    employee.getVersion(),
+                    employee.getCreatedAt()
+            );
+            employeeResponses.add(response);
+        }
+        long count = employeeRepository.count(employeeFilter);
+        int totalPages = (int) Math.ceil((double) count / size);
+        PageResponse<EmployeeResponse> pageResponse = new PageResponse<>(
+                employeeResponses,
+                page,
+                size,
+                count,
+                totalPages
+        );
+        return pageResponse;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Long count(String department) {
+        return employeeRepository.countByDepartment(department);
     }
 }
