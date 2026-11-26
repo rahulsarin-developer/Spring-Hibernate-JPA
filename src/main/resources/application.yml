@@ -3,8 +3,8 @@ spring:
     name: spring-hibernate-jpa
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/employee_db?createDatabaseIfNotExist=true}
-    username: root
-    password: admin
+    username: <enter_your_username>
+    password: <enter_your_password>
   jpa:
     open-in-view: false
     hibernate:
