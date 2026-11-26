@@ -39,20 +39,6 @@ filtering, exception handling, API documentation, and automated testing.
 - Unit and integration testing
 - Clean and maintainable code
 
-## Application Architecture
-
-```mermaid
-flowchart TD
-    A[Client / Swagger UI] --> B[REST Controller]
-    B --> C[Service Interface]
-    C --> D[Service Implementation]
-    D --> E[Repository Interface]
-    E --> F[Repository Implementation]
-    F --> G[EntityManager]
-    G --> H[Hibernate ORM]
-    I --> J[(MySQL Database)]
-```
-
 ## Project Structure
 
 ```text
